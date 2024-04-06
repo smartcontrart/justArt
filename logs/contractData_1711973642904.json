@@ -1,0 +1,14 @@
+{
+  "sepolia": {
+    "Wuzzles": {
+      "contract": "0x2FFf09a2d5B336f94C72E122174c2d20D124d806",
+      "arguments": [
+        "https://arweave.net/z0Z0w8Qwssb1Dh0vOrkhr5WkFhoOtCqcE8_MVNVH3zk"
+      ]
+    },
+    "WuzzlesMint": {
+      "contract": "0x6400Ad7efFC09a5e9aD1E23b2Dc6A3e4e90CD7A7",
+      "arguments": ["0x2FFf09a2d5B336f94C72E122174c2d20D124d806"]
+    }
+  }
+}

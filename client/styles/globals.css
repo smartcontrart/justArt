@@ -1,0 +1,17 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@font-face {
+  font-family: "TommySoft";
+  src: url("../font/MADE Tommy Soft Bold PERSONAL USE.otf");
+}
+
+html {
+  font-family: "TommySoft";
+  background-color: #2667ff;
+}
+
+body {
+  background-color: #2667ff;
+}
