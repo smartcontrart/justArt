@@ -77,7 +77,7 @@ export default function UserInterface() {
         });
         setPrivateMint(data[0].result as boolean);
         if (data[0].result === true) {
-          setQuantity(10);
+          setQuantity(12);
         }
       } catch (error) {
         console.error(error);
