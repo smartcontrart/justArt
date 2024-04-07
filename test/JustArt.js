@@ -9,12 +9,13 @@ const hre = require("hardhat");
 const DEFAULT_URI_DATA_PHASE_1 = {
   name: "JustArt* #",
   description:
-    "after a while the meaning of an given work is valued by the price people are willing to pay. Slogan: true value is subjective, and rarely captured.",
+    "after a while the meaning of a given work is valued by the price people are willing to pay.",
   image: "URI_DATA_PHASE_1/",
 };
 const DEFAULT_URI_DATA_PHASE_2 = {
-  name: "JustArt* Phase 2#",
-  description: "Description phase 2",
+  name: "Untitled #",
+  description:
+    "after a while the meaning of a given work is valued by the price people are willing to pay.",
   image: "URI_DATA_PHASE_2/",
 };
 const MINT_PRICE = "0.005";
@@ -73,7 +74,8 @@ describe("Just Art", function () {
 
     it("Should prevent to mint more than the max supply", async function () {
       const { justArt, collector } = await loadFixture(deployJustArt);
-      const bucket = 10000 / 100;
+      const maxSupply = await justArt.maxSupply();
+      const bucket = maxSupply / 100;
       for (i = 0; i < bucket; i++) {
         await justArt.mint(collector.address, 100);
       }
@@ -81,7 +83,7 @@ describe("Just Art", function () {
         "Max supply reached"
       );
       const distribution = { 0: 0, 1: 0, 2: 0, 3: 0 };
-      for (let i = 0; i < 10000; i++) {
+      for (let i = 0; i < maxSupply; i++) {
         const visual = await justArt.tokenVisuals(i);
         distribution[visual]++;
       }
@@ -100,7 +102,7 @@ describe("Just Art", function () {
       await justArt.mint(collector.address, 1);
       const visual = await justArt.tokenVisuals(1);
       expect(await justArt.tokenURI(1)).to.equal(
-        `data:application/json;utf8,{"name":"JustArt #1", "description":"after a while the meaning of an given work is valued by the price people are willing to pay. Slogan: true value is subjective, and rarely captured.", "image":"URI_DATA_PHASE_1/${visual}.png"}`
+        `data:application/json;utf8,{"name":"JustArt* #1", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"URI_DATA_PHASE_1/${visual}.png"}`
       );
     });
 
@@ -110,7 +112,7 @@ describe("Just Art", function () {
       await justArt.setURI("newURI/");
       const visual = await justArt.tokenVisuals(1);
       expect(await justArt.tokenURI(1)).to.equal(
-        `data:application/json;utf8,{"name":"JustArt #1", "description":"after a while the meaning of an given work is valued by the price people are willing to pay. Slogan: true value is subjective, and rarely captured.", "image":"URI_DATA_PHASE_1/${visual}.png"}`
+        `data:application/json;utf8,{"name":"JustArt* #1", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"URI_DATA_PHASE_1/${visual}.png"}`
       );
     });
 
@@ -172,7 +174,7 @@ describe("Just Art", function () {
       await justArt.mint(collector.address, 100);
       await justArt.connect(collector).swap(tokensToSwap);
       expect(await justArt.tokenURI(swappedTokenId)).to.equal(
-        `data:application/json;utf8,{"name":"JustArt Phase 2#${swappedTokenId}", "description":"Description phase 2", "image":"URI_DATA_PHASE_2/${visual}.png"}`
+        `data:application/json;utf8,{"name":"Untitled #${swappedTokenId}", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"URI_DATA_PHASE_2/${visual}.png"}`
       );
     });
   });

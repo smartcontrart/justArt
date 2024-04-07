@@ -11,15 +11,14 @@ async function main() {
 
   const [deployer] = await ethers.getSigners();
 
-  console.log(contractsData[hre.network.name]["Wuzzles"].contract);
+  console.log(contractsData[hre.network.name]["JustArt"].contract);
   for (i = 0; i < ALaddresses.length; i++) {
-    let signature = {};
     const message = ethers.utils.solidityKeccak256(
       ["address", "address", "bool"],
       [
         ALaddresses[i],
-        contractsData[hre.network.name]["Wuzzles"].contract,
-        false,
+        contractsData[hre.network.name]["JustArt"].contract,
+        true,
       ]
     );
     let signedMessage = await deployer.signMessage(

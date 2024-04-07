@@ -18,7 +18,7 @@ contract JustArt is ERC721 {
     uint256 public tokenId;
     uint256 public swappedTokenId;
     uint256 private royaltyAmount; //in %
-    uint256 public immutable maxSupply = 10000;
+    uint256 public immutable maxSupply = 12000;
     uint256 public immutable DIVISOR = 10000;
 
     mapping(uint256 => uint256) public tokenVisuals;
@@ -87,7 +87,7 @@ contract JustArt is ERC721 {
         }
     }
 
-    function transform(uint256[] calldata _tokenIds) external {
+    function swap(uint256[] calldata _tokenIds) external {
         require(_tokenIds.length % 4 == 0, "Requires 4 tokens to swap");
         require(
             _tokenIds.length <= 100,

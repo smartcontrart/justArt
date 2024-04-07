@@ -38,7 +38,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 );
 
 const { wallets } = getDefaultWallets({
-  appName: "Wuzzles",
+  appName: "JustArt*",
   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID!,
   chains,
 });

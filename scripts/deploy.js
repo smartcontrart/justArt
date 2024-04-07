@@ -8,11 +8,23 @@ const hre = require("hardhat");
 var fs = require("fs");
 const contractsData = require("../logs/contractsData.json");
 
-const unrevealedURI =
-  "https://arweave.net/z0Z0w8Qwssb1Dh0vOrkhr5WkFhoOtCqcE8_MVNVH3zk";
+const DEFAULT_URI_DATA_PHASE_1 = {
+  name: "JustArt* #",
+  description:
+    "after a while the meaning of a given work is valued by the price people are willing to pay.",
+  image: "URI_DATA_PHASE_1/",
+};
+const DEFAULT_URI_DATA_PHASE_2 = {
+  name: "Untitled #",
+  description:
+    "after a while the meaning of a given work is valued by the price people are willing to pay.",
+  image: "URI_DATA_PHASE_2/",
+};
 
-const revealedURI =
-  "https://arweave.net/L_mkz8t6tuF1l7UsZlUdOl8jBeEacIoiaS1Lw32t8Qk/";
+const RECIPIENT_1 = "0xe630ed06B1B14ad4db042C04705DFF2429b934Bb";
+const RECIPIENT_2 = "0xe630ed06B1B14ad4db042C04705DFF2429b934Bb";
+const SHARE_RECIPIENT_1 = 8000;
+const SHARE_RECIPIENT_2 = 2000;
 
 async function main() {
   const [deployer] = await ethers.getSigners();
@@ -20,38 +32,54 @@ async function main() {
 
   const chainId = await deployer.getChainId();
 
-  console.log(`Deploying Wuzzles on ${chainId} ...`);
+  console.log(`Deploying JustArt on ${chainId} ...`);
 
-  const Wuzzles = await ethers.getContractFactory("Wuzzles");
-  const wuzzles = await Wuzzles.deploy(unrevealedURI);
-  await wuzzles.deployed();
+  const JustArt = await ethers.getContractFactory("JustArt");
+  const justArt = await JustArt.deploy(
+    DEFAULT_URI_DATA_PHASE_1,
+    DEFAULT_URI_DATA_PHASE_2
+  );
+  await justArt.deployed();
 
-  console.log(`Wuzzles deployed to ${wuzzles.address}`);
+  console.log(`JustArt deployed to ${justArt.address}`);
 
-  console.log(`Deploying WuzzlesMint on ${chainId} ...`);
+  console.log(`Deploying JustArtMint on ${chainId} ...`);
 
-  const WuzzlesMint = await ethers.getContractFactory("WuzzlesMint");
-  const wuzzlesMint = await WuzzlesMint.deploy(wuzzles.address);
-  await wuzzlesMint.deployed();
+  const JustArtMint = await ethers.getContractFactory("JustArtMint");
+  const justArtMintArgs = [
+    justArt.address,
+    RECIPIENT_1,
+    RECIPIENT_2,
+    SHARE_RECIPIENT_1,
+    SHARE_RECIPIENT_2,
+  ];
+  const justArtMint = await JustArtMint.deploy(
+    justArtMintArgs[0],
+    justArtMintArgs[1],
+    justArtMintArgs[2],
+    justArtMintArgs[3],
+    justArtMintArgs[4]
+  );
+  await justArtMint.deployed();
 
-  console.log(`WuzzlesMint deployed to ${wuzzlesMint.address}`);
+  console.log(`JustArtMint deployed to ${justArtMint.address}`);
 
   if (!contractsData[hre.network.name]) {
-    contractsData[hre.network.name] = { Wuzzles: {}, WuzzlesMint: {} };
+    contractsData[hre.network.name] = { JustArt: {}, JustArtMint: {} };
   }
-  contractsData[hre.network.name]["Wuzzles"] = {
-    contract: wuzzles.address,
+  contractsData[hre.network.name]["JustArt"] = {
+    contract: justArt.address,
     arguments: [unrevealedURI],
   };
-  contractsData[hre.network.name]["WuzzlesMint"] = {
-    contract: wuzzlesMint.address,
-    arguments: [wuzzles.address],
+  contractsData[hre.network.name]["JustArtMint"] = {
+    contract: justArtMint.address,
+    arguments: justArtMintArgs,
   };
 
   await storeDeploymentInformation();
 
-  console.log("Administering Wuzzles...");
-  await wuzzles.toggleAdmin(wuzzlesMint.address);
+  console.log("Administering JustArt...");
+  await justArt.toggleAdmin(justArtMint.address);
 
   console.log(contractsData);
 }

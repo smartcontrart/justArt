@@ -149,20 +149,20 @@ export default function UserInterface() {
 
   return (
     <div className="flex self-center">
-      <div className="m-5">
-        <div className="text-xl">mint.</div>
-        <div className="text-xs">unlimited</div>
+      <div className="m-5 flex flex-col justify-center">
+        <button className="text-xl color-change rounded-3xl px-4">mint.</button>
+        <div className="text-xs text-center">unlimited</div>
       </div>
       <div className="flex border border-black self-center rounded-3xl text-black px-2">
         <Image
-          src={plus}
-          alt="plus"
+          src={minus}
+          alt="minus"
           style={{ width: "10px" }}
-          onClick={increaseQuantity}
+          onClick={decreaseQuantity}
         />
         <form>
           <input
-            className="text-right"
+            className="text-center"
             type="number"
             onChange={(e) => updateQuantity(e)}
             value={quantity}
@@ -170,10 +170,10 @@ export default function UserInterface() {
           ></input>
         </form>
         <Image
-          src={minus}
-          alt="minus"
+          src={plus}
+          alt="plus"
           style={{ width: "10px" }}
-          onClick={decreaseQuantity}
+          onClick={increaseQuantity}
         />
       </div>
     </div>
