@@ -8,17 +8,23 @@ const hre = require("hardhat");
 var fs = require("fs");
 const contractsData = require("../logs/contractsData.json");
 
+const DEFAULT_URI_DATA_PHASE_0 = {
+  name: "JustArt* #",
+  description:
+    "after a while the meaning of a given work is valued by the price people are willing to pay.",
+  image: "https://arweave.net/TiRpt56pd7hAEn8Aa9HHJnSi9iZBpvvidzrTWwZAfow",
+};
 const DEFAULT_URI_DATA_PHASE_1 = {
   name: "JustArt* #",
   description:
     "after a while the meaning of a given work is valued by the price people are willing to pay.",
-  image: "URI_DATA_PHASE_1/",
+  image: "https://arweave.net/1LxpZB7jljZDADFAcEmN-CDDck6VfbdAGrv8keTAGaI/",
 };
 const DEFAULT_URI_DATA_PHASE_2 = {
   name: "Untitled #",
   description:
     "after a while the meaning of a given work is valued by the price people are willing to pay.",
-  image: "URI_DATA_PHASE_2/",
+  image: "https://arweave.net/YeHJekpGktwjGx_7nzRdfd0jmGQh3Vr58p9ZTKmGyU4/",
 };
 
 const RECIPIENT_1 = "0xe630ed06B1B14ad4db042C04705DFF2429b934Bb";
@@ -36,6 +42,7 @@ async function main() {
 
   const JustArt = await ethers.getContractFactory("JustArt");
   const justArt = await JustArt.deploy(
+    DEFAULT_URI_DATA_PHASE_0,
     DEFAULT_URI_DATA_PHASE_1,
     DEFAULT_URI_DATA_PHASE_2
   );
@@ -46,6 +53,7 @@ async function main() {
   console.log(`Deploying JustArtMint on ${chainId} ...`);
 
   const JustArtMint = await ethers.getContractFactory("JustArtMint");
+
   const justArtMintArgs = [
     justArt.address,
     RECIPIENT_1,

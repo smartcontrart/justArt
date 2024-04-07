@@ -13,6 +13,8 @@ contract JustArt is ERC721 {
         string image;
     }
 
+    bool revealed;
+
     address payable private royalties_recipient;
 
     uint256 public tokenId;
@@ -26,12 +28,14 @@ contract JustArt is ERC721 {
     string[] private uriComponents;
     string uri;
 
+    URIData private URIDataPhase0;
     URIData private URIDataPhase1;
     URIData private URIDataPhase2;
 
     mapping(address => bool) public isAdmin;
 
     constructor(
+        URIData memory _URIDataPhase0,
         URIData memory _URIDataPhase1,
         URIData memory _URIDataPhase2
     ) ERC721("JustArt", "JUSTART") {
@@ -46,6 +50,7 @@ contract JustArt is ERC721 {
         royaltyAmount = 750;
         tokenId = 1;
         swappedTokenId = maxSupply + 1;
+        URIDataPhase0 = _URIDataPhase0;
         URIDataPhase1 = _URIDataPhase1;
         URIDataPhase2 = _URIDataPhase2;
     }
@@ -105,12 +110,23 @@ contract JustArt is ERC721 {
         }
     }
 
+    function reveal() external adminRequired {
+        revealed = true;
+    }
+
     function toggleAdmin(address _admin) external adminRequired {
         isAdmin[_admin] = !isAdmin[_admin];
     }
 
-    function setURI(string calldata _uri) external adminRequired {
-        uri = _uri;
+    function setURI(
+        uint8 _phase,
+        URIData memory _updatedURIData
+    ) external adminRequired {
+        _phase == 0
+            ? URIDataPhase0 = _updatedURIData
+            : _phase == 1
+                ? URIDataPhase1 = _updatedURIData
+                : URIDataPhase2 = _updatedURIData;
     }
 
     function tokenURI(
@@ -120,21 +136,25 @@ contract JustArt is ERC721 {
             _exists(_tokenId),
             "ERC721Metadata: URI query for nonexistent token"
         );
-        URIData memory _URIData = _tokenId <= maxSupply
-            ? URIDataPhase1
-            : URIDataPhase2;
+        URIData memory _URIData = !revealed
+            ? URIDataPhase0
+            : _tokenId <= maxSupply
+                ? URIDataPhase1
+                : URIDataPhase2;
 
         bytes memory _name = bytes(
             abi.encodePacked(_URIData.name, Strings.toString(_tokenId))
         );
 
-        bytes memory _image = bytes(
-            abi.encodePacked(
-                _URIData.image,
-                Strings.toString(tokenVisuals[_tokenId]),
-                ".png"
-            )
-        );
+        bytes memory _image = !revealed
+            ? bytes(abi.encodePacked(_URIData.image))
+            : bytes(
+                abi.encodePacked(
+                    _URIData.image,
+                    Strings.toString(tokenVisuals[_tokenId]),
+                    ".png"
+                )
+            );
         bytes memory _byteString = abi.encodePacked(
             abi.encodePacked(uriComponents[0], _name),
             abi.encodePacked(uriComponents[1], _URIData.description),

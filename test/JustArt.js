@@ -6,17 +6,28 @@ const {
 const { expect } = require("chai");
 const { ethers, upgrades, waffle } = require("hardhat");
 const hre = require("hardhat");
+const DEFAULT_UPDATED_URI = {
+  name: "Updated #",
+  description: "Updated",
+  image: "Updated/",
+};
+const DEFAULT_URI_DATA_PHASE_0 = {
+  name: "JustArt* #",
+  description:
+    "after a while the meaning of a given work is valued by the price people are willing to pay.",
+  image: "https://arweave.net/TiRpt56pd7hAEn8Aa9HHJnSi9iZBpvvidzrTWwZAfow",
+};
 const DEFAULT_URI_DATA_PHASE_1 = {
   name: "JustArt* #",
   description:
     "after a while the meaning of a given work is valued by the price people are willing to pay.",
-  image: "URI_DATA_PHASE_1/",
+  image: "https://arweave.net/1LxpZB7jljZDADFAcEmN-CDDck6VfbdAGrv8keTAGaI/",
 };
 const DEFAULT_URI_DATA_PHASE_2 = {
   name: "Untitled #",
   description:
     "after a while the meaning of a given work is valued by the price people are willing to pay.",
-  image: "URI_DATA_PHASE_2/",
+  image: "https://arweave.net/YeHJekpGktwjGx_7nzRdfd0jmGQh3Vr58p9ZTKmGyU4/",
 };
 const MINT_PRICE = "0.005";
 const DEFAULT_QUANTITY = 10;
@@ -29,6 +40,7 @@ describe("Just Art", function () {
 
     const JustArt = await hre.ethers.getContractFactory("JustArt");
     const justArt = await JustArt.deploy(
+      DEFAULT_URI_DATA_PHASE_0,
       DEFAULT_URI_DATA_PHASE_1,
       DEFAULT_URI_DATA_PHASE_2
     );
@@ -97,22 +109,69 @@ describe("Just Art", function () {
       ).to.be.revertedWith("Only admins can perfom this action");
     });
 
+    it("Should allow an admin to reveal the drop", async function () {
+      const { justArt } = await loadFixture(deployJustArt);
+      expect(await justArt.reveal()).to.not.be.reverted;
+    });
+
+    it("Should prevent anyone from revealing the drop", async function () {
+      const { justArt, anyone } = await loadFixture(deployJustArt);
+      await expect(justArt.connect(anyone).reveal()).to.be.revertedWith(
+        "Only admins can perfom this action"
+      );
+    });
+
     it("Should have a URI", async function () {
       const { justArt, collector } = await loadFixture(deployJustArt);
       await justArt.mint(collector.address, 1);
       const visual = await justArt.tokenVisuals(1);
       expect(await justArt.tokenURI(1)).to.equal(
-        `data:application/json;utf8,{"name":"JustArt* #1", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"URI_DATA_PHASE_1/${visual}.png"}`
+        `data:application/json;utf8,{"name":"JustArt* #1", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/TiRpt56pd7hAEn8Aa9HHJnSi9iZBpvvidzrTWwZAfow"}`
       );
     });
 
-    it("Should allow an admin to set a new URI", async function () {
+    it("Should reveal the drop", async function () {
       const { justArt, collector } = await loadFixture(deployJustArt);
       await justArt.mint(collector.address, 1);
-      await justArt.setURI("newURI/");
+      await justArt.reveal();
       const visual = await justArt.tokenVisuals(1);
       expect(await justArt.tokenURI(1)).to.equal(
-        `data:application/json;utf8,{"name":"JustArt* #1", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"URI_DATA_PHASE_1/${visual}.png"}`
+        `data:application/json;utf8,{"name":"JustArt* #1", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/1LxpZB7jljZDADFAcEmN-CDDck6VfbdAGrv8keTAGaI/${visual}.png"}`
+      );
+    });
+
+    it("Should allow an admin to set a new URI in phase 0", async function () {
+      const { justArt, collector } = await loadFixture(deployJustArt);
+      await justArt.mint(collector.address, 1);
+      await justArt.setURI(0, DEFAULT_UPDATED_URI);
+      const visual = await justArt.tokenVisuals(1);
+      expect(await justArt.tokenURI(1)).to.equal(
+        `data:application/json;utf8,{"name":"Updated #1", "description":"Updated", "image":"Updated/"}`
+      );
+    });
+
+    it("Should allow an admin to set a new URI in phase 1", async function () {
+      const { justArt, collector } = await loadFixture(deployJustArt);
+      await justArt.mint(collector.address, 1);
+      await justArt.setURI(1, DEFAULT_UPDATED_URI);
+      await justArt.reveal();
+      const visual = await justArt.tokenVisuals(1);
+      expect(await justArt.tokenURI(1)).to.equal(
+        `data:application/json;utf8,{"name":"Updated #1", "description":"Updated", "image":"Updated/${visual}.png"}`
+      );
+    });
+
+    it("Should allow an admin to set a new URI in phase 2", async function () {
+      const { justArt, collector } = await loadFixture(deployJustArt);
+      const swappedTokenId = await justArt.swappedTokenId();
+      const tokensToSwap = [1, 2, 3, 4];
+      const visual = await justArt.tokenVisuals(swappedTokenId);
+      await justArt.mint(collector.address, 100);
+      await justArt.reveal();
+      await justArt.connect(collector).swap(tokensToSwap);
+      await justArt.setURI(2, DEFAULT_UPDATED_URI);
+      expect(await justArt.tokenURI(swappedTokenId)).to.equal(
+        `data:application/json;utf8,{"name":"Updated #${swappedTokenId}", "description":"Updated", "image":"Updated/${visual}.png"}`
       );
     });
 
@@ -172,11 +231,14 @@ describe("Just Art", function () {
       const swappedTokenId = await justArt.swappedTokenId();
       const visual = await justArt.tokenVisuals(swappedTokenId);
       await justArt.mint(collector.address, 100);
+      await justArt.reveal();
       await justArt.connect(collector).swap(tokensToSwap);
       expect(await justArt.tokenURI(swappedTokenId)).to.equal(
-        `data:application/json;utf8,{"name":"Untitled #${swappedTokenId}", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"URI_DATA_PHASE_2/${visual}.png"}`
+        `data:application/json;utf8,{"name":"Untitled #${swappedTokenId}", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/YeHJekpGktwjGx_7nzRdfd0jmGQh3Vr58p9ZTKmGyU4/${visual}.png"}`
       );
     });
+
+    // Need to test the visuals pre/post swap
   });
 });
 
@@ -187,6 +249,7 @@ describe("JustArtMint Unit", function () {
 
     const JustArt = await hre.ethers.getContractFactory("JustArt");
     const justArt = await JustArt.deploy(
+      DEFAULT_URI_DATA_PHASE_0,
       DEFAULT_URI_DATA_PHASE_1,
       DEFAULT_URI_DATA_PHASE_2
     );
