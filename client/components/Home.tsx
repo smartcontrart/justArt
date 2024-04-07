@@ -46,11 +46,11 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col text-4xl p-5 font-extrabold justify-end">
-        <div className="flex text-lg font-extrabold self-end w-1/4 justify-between">
+        <div className="flex flex-col md:flex-row text-xs lg:text-lg font-extrabold self-end w-1/4 justify-between text-center self-center lg:self-end ">
           <div>.005 eth</div>
           <div>0/12,000 minted.</div>
         </div>
-        <div className="flex text-lg font-extrabold justify-end">
+        <div className="flex text-lg font-extrabold lg:justify-end justify-center">
           <Image
             src={barcode}
             className="flex NFT_visual"
