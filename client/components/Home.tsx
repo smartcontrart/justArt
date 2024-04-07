@@ -42,7 +42,13 @@ export default function Home() {
     <div className="min-h-screen flex flex-col justify-between">
       {userConnected ? (
         <div className="flex flex-col md:flex-row md:justify-between p-5 items-start">
-          {isConnected ? <UserInterface /> : null}
+          {isConnected ? (
+            chain!.id === 11155111 ? (
+              <UserInterface />
+            ) : (
+              <div>Please connect to Base</div>
+            )
+          ) : null}
           <span className="self-center md:self-start m-3">
             <ConnectButton chainStatus="icon" showBalance={false} />
           </span>

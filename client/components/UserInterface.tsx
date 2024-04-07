@@ -150,14 +150,15 @@ export default function UserInterface() {
   };
 
   const controlValue = (value) => {
+    const cap = privateMint ? 10 : publicMint ? 100 : 0;
     if (isNaN(value)) {
       setQuantity(0);
       return;
     } else if (value < 0) {
       setQuantity(0);
       return;
-    } else if (value > 100) {
-      setQuantity(100);
+    } else if (value > cap) {
+      setQuantity(cap);
       return;
     } else {
       setQuantity(value);
