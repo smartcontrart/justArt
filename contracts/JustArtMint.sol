@@ -22,7 +22,6 @@ contract JustArtMint {
     bool public publicMintOpened;
 
     mapping(address => bool) public isAdmin;
-    mapping(address => bool) public minted;
     mapping(address => uint256) public quantityMinted;
 
     constructor(
@@ -129,8 +128,6 @@ contract JustArtMint {
     function mint(uint256 _quantity) internal {
         uint256 _price = price * _quantity;
         require(msg.value >= _price, "Not enough funds");
-        require(minted[msg.sender] == false, "Only one NFT per wallet");
-        minted[msg.sender] = true;
         bool successTransfer1 = payable(recipient1).send(
             (_price * share1) / DIVISOR
         );
