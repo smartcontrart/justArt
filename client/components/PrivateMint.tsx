@@ -13,6 +13,9 @@ export default function PrivateMint(props) {
   const [signedMessage, setSignedMessage] = useState({ v: "", r: "", s: "" });
   const { address, connector, isConnected } = useAccount();
   const { chain, chains } = useNetwork();
+  const [quantity, setQuantity] = useState(
+    isNaN(props.quantity) ? 0 : props.quantity
+  );
 
   useEffect(() => {
     const findSignedMessage = async (account: any) => {
@@ -36,8 +39,8 @@ export default function PrivateMint(props) {
         : (process.env.NEXT_PUBLIC_JUSTART_MINT as `0x${string}`),
     abi: JustArtMint.abi,
     functionName: "privateMint",
-    args: [props.quantity, signedMessage.v, signedMessage.r, signedMessage.s],
-    value: BigInt(props.price) * BigInt(props.quantity),
+    args: [quantity, signedMessage.v, signedMessage.r, signedMessage.s],
+    value: BigInt(props.price) * BigInt(quantity),
   });
   const { data, write } = useContractWrite(config);
   const { isLoading, isSuccess } = useWaitForTransaction({

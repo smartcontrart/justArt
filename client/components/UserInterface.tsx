@@ -150,11 +150,8 @@ export default function UserInterface() {
   };
 
   const controlValue = (value) => {
-    const cap = privateMint ? 10 : publicMint ? 100 : 0;
-    if (isNaN(value)) {
-      setQuantity(0);
-      return;
-    } else if (value < 0) {
+    const cap = privateMint ? 12 : publicMint ? 100 : 0;
+    if (value < 0) {
       setQuantity(0);
       return;
     } else if (value > cap) {
@@ -181,7 +178,7 @@ export default function UserInterface() {
           </button>
         )}
         {privateMint ? (
-          <div className="text-xs text-center">max 10 per wallet</div>
+          <div className="text-xs text-center">max 12 per wallet</div>
         ) : publicMint ? (
           <span>
             <div className="text-xs text-center">unlimited.</div>

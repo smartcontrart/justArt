@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract JustArtMint {
     uint256 public price = 0.005 ether;
-    uint256 public immutable limitPerWallet = 10;
+    uint256 public immutable limitPerWallet = 12;
     uint256 share1;
     uint256 share2;
     uint256 private immutable DIVISOR = 10000;

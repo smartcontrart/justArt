@@ -12,6 +12,9 @@ export default function PublicMint(props) {
   const { chain, chains } = useNetwork();
   const { address, isConnected } = useAccount();
   const [chainId, setChainId] = useState(0);
+  const [quantity, setQuantity] = useState(
+    isNaN(props.quantity) ? 0 : props.quantity
+  );
 
   useEffect(() => {
     setChainId(chain!.id);
@@ -24,8 +27,8 @@ export default function PublicMint(props) {
         : (process.env.NEXT_PUBLIC_JUSTART_MINT as `0x${string}`),
     abi: JustArtMint.abi,
     functionName: "publicMint",
-    args: [props.quantity],
-    value: BigInt(props.price) * BigInt(props.quantity),
+    args: [quantity],
+    value: BigInt(props.price) * BigInt(quantity),
   });
 
   const { data, write } = useContractWrite(config);

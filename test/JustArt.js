@@ -30,7 +30,7 @@ const DEFAULT_URI_DATA_PHASE_2 = {
   image: "https://arweave.net/YeHJekpGktwjGx_7nzRdfd0jmGQh3Vr58p9ZTKmGyU4/",
 };
 const MINT_PRICE = "0.005";
-const DEFAULT_QUANTITY = 10;
+const DEFAULT_QUANTITY = 12;
 const DEFAULT_SHARE_1 = 8000;
 const DEFAULT_SHARE_2 = 2000;
 
@@ -354,7 +354,9 @@ describe("JustArtMint Unit", function () {
             BigInt(ethers.utils.parseEther(MINT_PRICE)) *
             BigInt(DEFAULT_QUANTITY),
         });
-      expect(await justArt.balanceOf(collector.address)).to.equal(10);
+      expect(await justArt.balanceOf(collector.address)).to.equal(
+        DEFAULT_QUANTITY
+      );
     });
 
     it("Should transfer funds to recipient 1 and recipient 2", async function () {
@@ -532,7 +534,9 @@ describe("JustArtMint Unit", function () {
           BigInt(ethers.utils.parseEther(MINT_PRICE)) *
           BigInt(DEFAULT_QUANTITY),
       });
-      expect(await justArt.balanceOf(collector.address)).to.equal(10);
+      expect(await justArt.balanceOf(collector.address)).to.equal(
+        DEFAULT_QUANTITY
+      );
     });
 
     it("Should allow to mint multiple times on the public sale", async function () {
