@@ -30,7 +30,8 @@ export default function PrivateMint(props) {
       setSignedMessage(signedMessage);
     };
     findSignedMessage(address);
-  }, [signedMessage, address, isConnected]);
+    setQuantity(isNaN(props.quantity) ? 0 : props.quantity);
+  }, [signedMessage, address, isConnected, props]);
 
   const { config } = usePrepareContractWrite({
     address:
@@ -42,7 +43,9 @@ export default function PrivateMint(props) {
     args: [quantity, signedMessage.v, signedMessage.r, signedMessage.s],
     value: BigInt(props.price) * BigInt(quantity),
   });
+
   const { data, write } = useContractWrite(config);
+
   const { isLoading, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
   });

@@ -12,13 +12,13 @@ export default function PublicMint(props) {
   const { chain, chains } = useNetwork();
   const { address, isConnected } = useAccount();
   const [chainId, setChainId] = useState(0);
-  const [quantity, setQuantity] = useState(
-    isNaN(props.quantity) ? 0 : props.quantity
-  );
+  const [quantity, setQuantity] = useState(0);
 
   useEffect(() => {
+    setQuantity(isNaN(props.quantity) ? 0 : props.quantity);
+    console.log(quantity);
     setChainId(chain!.id);
-  }, [chain, address, isConnected]);
+  }, [chain, address, isConnected, props.quantity]);
 
   const { data: pdata, config } = usePrepareContractWrite({
     address:
