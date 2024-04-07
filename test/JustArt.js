@@ -534,5 +534,26 @@ describe("JustArtMint Unit", function () {
       });
       expect(await justArt.balanceOf(collector.address)).to.equal(10);
     });
+
+    it("Should allow to mint multiple times on the public sale", async function () {
+      const { justArt, justArtMint, collector, signatures } = await loadFixture(
+        deployJustArtMint
+      );
+      await justArt.toggleAdmin(justArtMint.address);
+      await justArtMint.togglePublicMintStatus();
+      await justArtMint.connect(collector).publicMint(DEFAULT_QUANTITY, {
+        value:
+          BigInt(ethers.utils.parseEther(MINT_PRICE)) *
+          BigInt(DEFAULT_QUANTITY),
+      });
+
+      expect(
+        await justArtMint.connect(collector).publicMint(DEFAULT_QUANTITY, {
+          value:
+            BigInt(ethers.utils.parseEther(MINT_PRICE)) *
+            BigInt(DEFAULT_QUANTITY),
+        })
+      ).to.not.be.reverted;
+    });
   });
 });
