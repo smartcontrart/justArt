@@ -6,10 +6,9 @@ import {
   useContractWrite,
   useWaitForTransaction,
 } from "wagmi";
-import WuzzlesMint from "../contracts/WuzzlesMint.sol/WuzzlesMint.json";
+import JustArtMint from "../contracts/JustArtMint.sol/JustArtMint.json";
 
 export default function PublicMint() {
-  const [alert, setAlert] = useState({ display: false, message: "" });
   const { chain, chains } = useNetwork();
   const { address, isConnected } = useAccount();
   const [chainId, setChainId] = useState(0);
@@ -21,11 +20,11 @@ export default function PublicMint() {
   const { data: pdata, config } = usePrepareContractWrite({
     address:
       chain!.id === 11155111
-        ? (process.env.NEXT_PUBLIC_WUZZLES_MINT_SEPOLIA as `0x${string}`)
-        : (process.env.NEXT_PUBLIC_WUZZLES_MINT as `0x${string}`),
-    abi: WuzzlesMint.abi,
+        ? (process.env.NEXT_PUBLIC_JUSTART_MINT_SEPOLIA as `0x${string}`)
+        : (process.env.NEXT_PUBLIC_JUSTART_MINT as `0x${string}`),
+    abi: JustArtMint.abi,
     functionName: "publicMint",
-    value: BigInt(9 * 10 ** 15),
+    value: BigInt(5 * 10 ** 15) * BigInt(props.quantity),
   });
 
   const { data, write } = useContractWrite(config);
@@ -38,7 +37,7 @@ export default function PublicMint() {
       {!isLoading ? (
         <button
           disabled={!write}
-          className="w-80 bg-neutral-200 rounded mt-5 mb-2 text-xl disabled:opacity-20"
+          className="text-xl color-change rounded-3xl px-4  disabled:opacity-20"
           onClick={() => write!()}
         >
           mint.

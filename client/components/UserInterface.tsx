@@ -10,8 +10,8 @@ import {
 import Image from "next/image";
 import plus from "../visuals/plus.svg";
 import minus from "../visuals/minus.svg";
-import WuzzlesMint from "../contracts/WuzzlesMint.sol/WuzzlesMint.json";
-import Wuzzles from "../contracts/Wuzzles.sol/Wuzzles.json";
+import JustArt from "../contracts/JustArt.sol/JustArt.json";
+import JustArtMint from "../contracts/JustArtMint.sol/JustArtMint.json";
 import PrivateMint from "./PrivateMint";
 import PublicMint from "./PublicMint";
 import signedList from "../signedList.json";
@@ -37,7 +37,6 @@ export default function UserInterface() {
           signedMessage = signedList[i][key];
         }
       }
-
       setSignedMessage(signedMessage);
     };
 
@@ -48,10 +47,10 @@ export default function UserInterface() {
             {
               address:
                 chain!.id === 11155111
-                  ? (process.env.NEXT_PUBLIC_WUZZLES_SEPOLIA as `0x${string}`)
-                  : (process.env.NEXT_PUBLIC_WUZZLES as `0x${string}`),
-              abi: Wuzzles.abi,
-              functionName: "_tokenId",
+                  ? (process.env.NEXT_PUBLIC_JUSTART_SEPOLIA as `0x${string}`)
+                  : (process.env.NEXT_PUBLIC_JUSTART as `0x${string}`),
+              abi: JustArt.abi,
+              functionName: "tokenId",
             },
           ],
         });
@@ -69,14 +68,18 @@ export default function UserInterface() {
               address:
                 chain!.id === 11155111
                   ? (process.env
-                      .NEXT_PUBLIC_WUZZLES_MINT_SEPOLIA as `0x${string}`)
-                  : (process.env.NEXT_PUBLIC_WUZZLES_MINT as `0x${string}`),
-              abi: WuzzlesMint.abi,
-              functionName: "_privateMintOpened",
+                      .NEXT_PUBLIC_JUSTART_MINT_SEPOLIA as `0x${string}`)
+                  : (process.env.NEXT_PUBLIC_JUSTART_MINT as `0x${string}`),
+              abi: JustArtMint.abi,
+              functionName: "privateMintOpened",
             },
           ],
         });
+        console.log(data);
         setPrivateMint(data[0].result as boolean);
+        if (data[0].result === true) {
+          setQuantity(10);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -90,14 +93,17 @@ export default function UserInterface() {
               address:
                 chain!.id === 11155111
                   ? (process.env
-                      .NEXT_PUBLIC_WUZZLES_MINT_SEPOLIA as `0x${string}`)
-                  : (process.env.NEXT_PUBLIC_WUZZLES_MINT as `0x${string}`),
-              abi: WuzzlesMint.abi,
-              functionName: "_publicMintOpened",
+                      .NEXT_PUBLIC_JUSTART_MINT_SEPOLIA as `0x${string}`)
+                  : (process.env.NEXT_PUBLIC_JUSTART_MINT as `0x${string}`),
+              abi: JustArtMint.abi,
+              functionName: "publicMintOpened",
             },
           ],
         });
         setPublicMint(data[0].result as boolean);
+        if (data[0].result === true) {
+          setQuantity(100);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -111,10 +117,10 @@ export default function UserInterface() {
               address:
                 chain!.id === 11155111
                   ? (process.env
-                      .NEXT_PUBLIC_WUZZLES_MINT_SEPOLIA as `0x${string}`)
-                  : (process.env.NEXT_PUBLIC_WUZZLES_MINT as `0x${string}`),
-              abi: WuzzlesMint.abi,
-              functionName: "_price",
+                      .NEXT_PUBLIC_JUSTART_MINT_SEPOLIA as `0x${string}`)
+                  : (process.env.NEXT_PUBLIC_JUSTART_MINT as `0x${string}`),
+              abi: JustArtMint.abi,
+              functionName: "price",
             },
           ],
         });
@@ -130,6 +136,7 @@ export default function UserInterface() {
     privateMintStatus();
     publicMintStatus();
     fetchMintPrice();
+    console.log(privateMint);
   }, [address, chain, publicMint, privateMint]);
 
   const updateQuantity = (e: any) => {
@@ -138,20 +145,38 @@ export default function UserInterface() {
   };
 
   const increaseQuantity = () => {
-    console.log(quantity - 1);
     setQuantity(quantity + 1);
   };
 
   const decreaseQuantity = () => {
-    console.log(quantity - 1);
     setQuantity(quantity - 1);
   };
 
   return (
     <div className="flex self-center">
       <div className="m-5 flex flex-col justify-center">
-        <button className="text-xl color-change rounded-3xl px-4">mint.</button>
-        <div className="text-xs text-center">unlimited</div>
+        {privateMint ? (
+          <PrivateMint quantity={quantity} />
+        ) : publicMint ? (
+          <PublicMint quantity={quantity} />
+        ) : (
+          <button
+            disabled
+            className="text-xl color-change rounded-3xl px-4  disabled:opacity-20"
+          >
+            mint.
+          </button>
+        )}
+        {privateMint ? (
+          <div className="text-xs text-center">max 10 per wallet</div>
+        ) : publicMint ? (
+          <div className="text-xs text-center">unlimited. Max 100 per tx</div>
+        ) : (
+          <div className="text-xs text-center">drop closed</div>
+        )}
+        {signedMessage.v !== "" ? (
+          <div className="text-xs text-left">wallet whitelisted</div>
+        ) : null}
       </div>
       <div className="flex border border-black self-center rounded-3xl text-black px-2">
         <Image
@@ -164,9 +189,11 @@ export default function UserInterface() {
           <input
             className="text-center"
             type="number"
+            min="0"
+            max={privateMint ? 10 : publicMint ? 100 : 0}
             onChange={(e) => updateQuantity(e)}
             value={quantity}
-            style={{ background: "none", maxWidth: "80px" }}
+            style={{ background: "none", width: "80px" }}
           ></input>
         </form>
         <Image

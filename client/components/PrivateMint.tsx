@@ -6,10 +6,10 @@ import {
   useContractWrite,
   useWaitForTransaction,
 } from "wagmi";
-import WuzzlesMint from "../contracts/WuzzlesMint.sol/WuzzlesMint.json";
+import JustArtMint from "../contracts/JustArtMint.sol/JustArtMint.json";
 import signedList from "../signedList.json";
 
-export default function PrivateMint() {
+export default function PrivateMint(props) {
   const [signedMessage, setSignedMessage] = useState({ v: "", r: "", s: "" });
   const { address, connector, isConnected } = useAccount();
   const { chain, chains } = useNetwork();
@@ -32,12 +32,12 @@ export default function PrivateMint() {
   const { config } = usePrepareContractWrite({
     address:
       chain!.id === 11155111
-        ? (process.env.NEXT_PUBLIC_WUZZLES_MINT_SEPOLIA as `0x${string}`)
-        : (process.env.NEXT_PUBLIC_WUZZLES_MINT as `0x${string}`),
-    abi: WuzzlesMint.abi,
+        ? (process.env.NEXT_PUBLIC_JUSTART_MINT_SEPOLIA as `0x${string}`)
+        : (process.env.NEXT_PUBLIC_JUSTART_MINT as `0x${string}`),
+    abi: JustArtMint.abi,
     functionName: "privateMint",
-    args: [signedMessage.v, signedMessage.r, signedMessage.s],
-    value: BigInt(9 * 10 ** 15),
+    args: [props.quantity, signedMessage.v, signedMessage.r, signedMessage.s],
+    value: BigInt(5 * 10 ** 15) * BigInt(props.quantity),
   });
   const { data, write } = useContractWrite(config);
   const { isLoading, isSuccess } = useWaitForTransaction({
@@ -49,7 +49,7 @@ export default function PrivateMint() {
       {!isLoading ? (
         <button
           disabled={!write}
-          className="w-80 bg-neutral-200 rounded mt-5 mb-2 text-xl disabled:opacity-20"
+          className="text-xl color-change rounded-3xl px-4  disabled:opacity-20"
           onClick={() => write!()}
         >
           mint.

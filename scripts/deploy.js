@@ -77,7 +77,11 @@ async function main() {
   }
   contractsData[hre.network.name]["JustArt"] = {
     contract: justArt.address,
-    arguments: [unrevealedURI],
+    arguments: [
+      DEFAULT_URI_DATA_PHASE_0,
+      DEFAULT_URI_DATA_PHASE_1,
+      DEFAULT_URI_DATA_PHASE_2,
+    ],
   };
   contractsData[hre.network.name]["JustArtMint"] = {
     contract: justArtMint.address,

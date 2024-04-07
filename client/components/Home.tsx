@@ -1,11 +1,11 @@
 import { useState, useContext, useEffect } from "react";
-import { Suspense } from "react";
+// import { Suspense } from "react";
 import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import logo from "../visuals/Logo.svg";
 import barcode from "../visuals/barcode.svg";
 import UserInterface from "./UserInterface";
-import WuzzlesMint from "../contracts/WuzzlesMint.sol/WuzzlesMint.json";
+// import JustArt from "../contracts/JustArtMint.sol/JustArtMint.json";
 import { useAccount, useBalance, useNetwork, readContracts } from "wagmi";
 
 export default function Home() {
