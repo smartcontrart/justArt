@@ -37,7 +37,7 @@ export default function PrivateMint(props) {
     abi: JustArtMint.abi,
     functionName: "privateMint",
     args: [props.quantity, signedMessage.v, signedMessage.r, signedMessage.s],
-    value: BigInt(5 * 10 ** 15) * BigInt(props.quantity),
+    value: BigInt(props.price) * BigInt(props.quantity),
   });
   const { data, write } = useContractWrite(config);
   const { isLoading, isSuccess } = useWaitForTransaction({

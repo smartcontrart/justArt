@@ -136,7 +136,6 @@ export default function UserInterface() {
     privateMintStatus();
     publicMintStatus();
     fetchMintPrice();
-    console.log(privateMint);
   }, [address, chain, publicMint, privateMint]);
 
   const updateQuantity = (e: any) => {
@@ -156,9 +155,9 @@ export default function UserInterface() {
     <div className="flex self-center">
       <div className="m-5 flex flex-col justify-center">
         {privateMint ? (
-          <PrivateMint quantity={quantity} />
+          <PrivateMint quantity={quantity} price={mintPrice} />
         ) : publicMint ? (
-          <PublicMint quantity={quantity} />
+          <PublicMint quantity={quantity} price={mintPrice} />
         ) : (
           <button
             disabled
@@ -170,11 +169,14 @@ export default function UserInterface() {
         {privateMint ? (
           <div className="text-xs text-center">max 10 per wallet</div>
         ) : publicMint ? (
-          <div className="text-xs text-center">unlimited. Max 100 per tx</div>
+          <span>
+            <div className="text-xs text-center">unlimited.</div>
+            <div className="text-xs text-center"> max 100 per tx</div>
+          </span>
         ) : (
           <div className="text-xs text-center">drop closed</div>
         )}
-        {signedMessage.v !== "" ? (
+        {signedMessage.v !== "" && !publicMint ? (
           <div className="text-xs text-left">wallet whitelisted</div>
         ) : null}
       </div>
@@ -190,7 +192,7 @@ export default function UserInterface() {
             className="text-center"
             type="number"
             min="0"
-            max={privateMint ? 10 : publicMint ? 100 : 0}
+            max={privateMint ? 10 : publicMint ? 50 : 0}
             onChange={(e) => updateQuantity(e)}
             value={quantity}
             style={{ background: "none", width: "80px" }}

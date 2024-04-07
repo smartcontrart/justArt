@@ -8,7 +8,7 @@ import {
 } from "wagmi";
 import JustArtMint from "../contracts/JustArtMint.sol/JustArtMint.json";
 
-export default function PublicMint() {
+export default function PublicMint(props) {
   const { chain, chains } = useNetwork();
   const { address, isConnected } = useAccount();
   const [chainId, setChainId] = useState(0);
@@ -24,7 +24,8 @@ export default function PublicMint() {
         : (process.env.NEXT_PUBLIC_JUSTART_MINT as `0x${string}`),
     abi: JustArtMint.abi,
     functionName: "publicMint",
-    value: BigInt(5 * 10 ** 15) * BigInt(props.quantity),
+    args: [props.quantity],
+    value: BigInt(props.price) * BigInt(props.quantity),
   });
 
   const { data, write } = useContractWrite(config);
