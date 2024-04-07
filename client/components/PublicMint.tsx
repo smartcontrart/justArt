@@ -16,7 +16,6 @@ export default function PublicMint(props) {
 
   useEffect(() => {
     setQuantity(isNaN(props.quantity) ? 0 : props.quantity);
-    console.log(quantity);
     setChainId(chain!.id);
   }, [chain, address, isConnected, props.quantity]);
 
