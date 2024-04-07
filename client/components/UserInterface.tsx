@@ -7,15 +7,20 @@ import {
   useWaitForTransaction,
   readContracts,
 } from "wagmi";
+import Image from "next/image";
+import plus from "../visuals/plus.svg";
+import minus from "../visuals/minus.svg";
 import WuzzlesMint from "../contracts/WuzzlesMint.sol/WuzzlesMint.json";
 import Wuzzles from "../contracts/Wuzzles.sol/Wuzzles.json";
 import PrivateMint from "./PrivateMint";
 import PublicMint from "./PublicMint";
 import signedList from "../signedList.json";
+import { MissingCustomChainError } from "web3";
 
 export default function UserInterface() {
   const [signedMessage, setSignedMessage] = useState({ v: "", r: "", s: "" });
   const [mintPrice, setMintPrice] = useState(0);
+  const [quantity, setQuantity] = useState(0);
   const { address, connector, isConnected } = useAccount();
   const [supply, setSupply] = useState(0);
   const [privateMint, setPrivateMint] = useState(false);
@@ -127,17 +132,49 @@ export default function UserInterface() {
     fetchMintPrice();
   }, [address, chain, publicMint, privateMint]);
 
+  const updateQuantity = (e: any) => {
+    console.log(parseInt(e.target.value));
+    setQuantity(parseInt(e.target.value));
+  };
+
+  const increaseQuantity = () => {
+    console.log(quantity - 1);
+    setQuantity(quantity + 1);
+  };
+
+  const decreaseQuantity = () => {
+    console.log(quantity - 1);
+    setQuantity(quantity - 1);
+  };
+
   return (
-    <div className="flex flex-col bg-white self-center rounded-xl text-black p-3">
-      <div className="flex flex-row justify-between text-xl">
-        <div>0.009 eth</div>
-        <div>{Math.max(0, Number(supply) - 1)}/900 minted.</div>
+    <div className="flex self-center">
+      <div className="m-5">
+        <div className="text-xl">mint.</div>
+        <div className="text-xs">unlimited</div>
       </div>
-      <div className="w-72 md:w-96 bg-neutral-200 rounded h-2"></div>
-      <div className="flex flex-row justify-center">Sold out</div>
-      {signedMessage.v !== "" ? <div>wallet wuzzlisted!</div> : null}
-      <div className="flex flex-row">
-        <div className="text-xs">max 1 per wallet</div>
+      <div className="flex border border-black self-center rounded-3xl text-black px-2">
+        <Image
+          src={plus}
+          alt="plus"
+          style={{ width: "10px" }}
+          onClick={increaseQuantity}
+        />
+        <form>
+          <input
+            className="text-right"
+            type="number"
+            onChange={(e) => updateQuantity(e)}
+            value={quantity}
+            style={{ background: "none", maxWidth: "80px" }}
+          ></input>
+        </form>
+        <Image
+          src={minus}
+          alt="minus"
+          style={{ width: "10px" }}
+          onClick={decreaseQuantity}
+        />
       </div>
     </div>
   );

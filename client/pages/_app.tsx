@@ -26,7 +26,6 @@ import {
 } from "@rainbow-me/rainbowkit/wallets";
 import "@rainbow-me/rainbowkit/styles.css";
 import "../styles/globals.css";
-// import { Nanum_Gothic_Coding } from "next/font/google";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -61,7 +60,7 @@ const wagmiConfig = createConfig({
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <main className="min-h-screen text-white ">
+    <main className="min-h-screen text-black">
       <WagmiConfig config={wagmiConfig}>
         <RainbowKitProvider
           chains={chains}

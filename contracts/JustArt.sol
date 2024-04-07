@@ -87,7 +87,7 @@ contract JustArt is ERC721 {
         }
     }
 
-    function swap(uint256[] calldata _tokenIds) external {
+    function transform(uint256[] calldata _tokenIds) external {
         require(_tokenIds.length % 4 == 0, "Requires 4 tokens to swap");
         require(
             _tokenIds.length <= 100,

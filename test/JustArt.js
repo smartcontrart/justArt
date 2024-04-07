@@ -7,13 +7,13 @@ const { expect } = require("chai");
 const { ethers, upgrades, waffle } = require("hardhat");
 const hre = require("hardhat");
 const DEFAULT_URI_DATA_PHASE_1 = {
-  name: "JustArt #",
+  name: "JustArt* #",
   description:
     "after a while the meaning of an given work is valued by the price people are willing to pay. Slogan: true value is subjective, and rarely captured.",
   image: "URI_DATA_PHASE_1/",
 };
 const DEFAULT_URI_DATA_PHASE_2 = {
-  name: "JustArt Phase 2#",
+  name: "JustArt* Phase 2#",
   description: "Description phase 2",
   image: "URI_DATA_PHASE_2/",
 };

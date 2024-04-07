@@ -2,7 +2,8 @@ import { useState, useContext, useEffect } from "react";
 import { Suspense } from "react";
 import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import logo from "../visuals/Logo.png";
+import logo from "../visuals/Logo.svg";
+import barcode from "../visuals/barcode.svg";
 import UserInterface from "./UserInterface";
 import WuzzlesMint from "../contracts/WuzzlesMint.sol/WuzzlesMint.json";
 import { useAccount, useBalance, useNetwork, readContracts } from "wagmi";
@@ -44,7 +45,20 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="text-4xl p-5 font-extrabold">wuzzles.</div>
+      <div className="flex flex-col text-4xl p-5 font-extrabold justify-end">
+        <div className="flex text-lg font-extrabold self-end w-1/4 justify-between">
+          <div>.005 eth</div>
+          <div>0/10,000 minted.</div>
+        </div>
+        <div className="flex text-lg font-extrabold justify-end">
+          <Image
+            src={barcode}
+            className="flex NFT_visual"
+            alt="barcode"
+            style={{ width: "25%" }}
+          />
+        </div>
+      </div>
     </div>
   );
 }
