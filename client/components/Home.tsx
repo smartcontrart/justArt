@@ -37,9 +37,9 @@ export default function Home() {
           <div className="m-auto">
             <Image
               src={logo}
-              className="NFT_visual"
+              className="w-auto"
               alt="logo"
-              style={{ maxHeight: "100%" }}
+              // style={{ maxHeight: "100%" }}
             />
           </div>
         </div>
