@@ -75,7 +75,6 @@ export default function UserInterface() {
             },
           ],
         });
-        console.log(data);
         setPrivateMint(data[0].result as boolean);
         if (data[0].result === true) {
           setQuantity(10);
@@ -102,7 +101,7 @@ export default function UserInterface() {
         });
         setPublicMint(data[0].result as boolean);
         if (data[0].result === true) {
-          setQuantity(100);
+          setQuantity(50);
         }
       } catch (error) {
         console.error(error);
@@ -139,16 +138,30 @@ export default function UserInterface() {
   }, [address, chain, publicMint, privateMint]);
 
   const updateQuantity = (e: any) => {
-    console.log(parseInt(e.target.value));
-    setQuantity(parseInt(e.target.value));
+    controlValue(parseInt(e.target.value));
   };
 
   const increaseQuantity = () => {
-    setQuantity(quantity + 1);
+    controlValue(quantity + 1);
   };
 
   const decreaseQuantity = () => {
-    setQuantity(quantity - 1);
+    controlValue(quantity - 1);
+  };
+
+  const controlValue = (value) => {
+    if (isNaN(value)) {
+      setQuantity(0);
+      return;
+    } else if (value < 0) {
+      setQuantity(0);
+      return;
+    } else if (value > 100) {
+      setQuantity(100);
+      return;
+    } else {
+      setQuantity(value);
+    }
   };
 
   return (
@@ -192,7 +205,6 @@ export default function UserInterface() {
             className="text-center"
             type="number"
             min="0"
-            max={privateMint ? 10 : publicMint ? 50 : 0}
             onChange={(e) => updateQuantity(e)}
             value={quantity}
             style={{ background: "none", width: "80px" }}

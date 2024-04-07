@@ -19,6 +19,7 @@ import {
 } from "wagmi/chains";
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 import { publicProvider } from "wagmi/providers/public";
+import { alchemyProvider } from "@wagmi/core/providers/alchemy";
 import {
   braveWallet,
   rabbyWallet,
@@ -34,7 +35,10 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     sepolia,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [sepolia] : []),
   ],
-  [publicProvider()]
+  [
+    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_MAINNET }),
+    publicProvider(),
+  ]
 );
 
 const { wallets } = getDefaultWallets({
