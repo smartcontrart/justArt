@@ -46,8 +46,6 @@ export default function PrivateMint(props) {
   });
 
   const { data, write } = useContractWrite(config);
-  console.log(data);
-  console.log(write);
 
   const { isLoading, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
