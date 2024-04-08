@@ -15,6 +15,7 @@ contract JustArt is ERC721 {
     }
 
     bool revealed;
+    bool swapEnabled;
 
     address payable private royalties_recipient;
 
@@ -25,7 +26,9 @@ contract JustArt is ERC721 {
     uint256 public immutable DIVISOR = 10000;
 
     mapping(uint256 => uint256) public tokenVisuals;
+    mapping(uint256 => uint256) public receiptVisuals;
     mapping(uint256 => string) public visualNames;
+    mapping(uint256 => bool) private isReceipt;
 
     string[] private uriComponents;
     string uri;
@@ -33,13 +36,15 @@ contract JustArt is ERC721 {
     URIData private URIDataPhase0;
     URIData private URIDataPhase1;
     URIData private URIDataPhase2;
+    URIData private URIDataReceipt;
 
     mapping(address => bool) public isAdmin;
 
     constructor(
         URIData memory _URIDataPhase0,
         URIData memory _URIDataPhase1,
-        URIData memory _URIDataPhase2
+        URIData memory _URIDataPhase2,
+        URIData memory _URIDataReceipt
     ) ERC721("JustArt", "JUSTART") {
         uriComponents = [
             'data:application/json;utf8,{"name":"',
@@ -56,6 +61,7 @@ contract JustArt is ERC721 {
         URIDataPhase0 = _URIDataPhase0;
         URIDataPhase1 = _URIDataPhase1;
         URIDataPhase2 = _URIDataPhase2;
+        URIDataReceipt = _URIDataReceipt;
         visualNames[0] = "American Gothic";
         visualNames[1] = "Mona Lisa";
         visualNames[2] = "The Starry Night";
@@ -99,6 +105,7 @@ contract JustArt is ERC721 {
     }
 
     function swap(uint256[] calldata _tokenIds) external {
+        require(swapEnabled, "Swaps closed");
         require(_tokenIds.length % 4 == 0, "Requires 4 tokens to swap");
         require(
             _tokenIds.length <= 100,
@@ -112,12 +119,20 @@ contract JustArt is ERC721 {
                 tokenVisuals[swappedTokenId] = visual;
                 _mint(msg.sender, swappedTokenId);
                 swappedTokenId++;
+                isReceipt[swappedTokenId] = true;
+                receiptVisuals[swappedTokenId] = visual % 4;
+                _mint(msg.sender, swappedTokenId);
+                swappedTokenId++;
             }
         }
     }
 
     function reveal() external adminRequired {
         revealed = true;
+    }
+
+    function enableSwaps() external adminRequired {
+        swapEnabled = true;
     }
 
     function toggleAdmin(address _admin) external adminRequired {
@@ -132,7 +147,9 @@ contract JustArt is ERC721 {
             ? URIDataPhase0 = _updatedURIData
             : _phase == 1
                 ? URIDataPhase1 = _updatedURIData
-                : URIDataPhase2 = _updatedURIData;
+                : _phase == 2
+                    ? URIDataPhase2 = _updatedURIData
+                    : URIDataReceipt = _updatedURIData;
     }
 
     function tokenURI(
@@ -142,15 +159,8 @@ contract JustArt is ERC721 {
             _exists(_tokenId),
             "ERC721Metadata: URI query for nonexistent token"
         );
-        URIData memory _URIData = !revealed
-            ? URIDataPhase0
-            : _tokenId <= maxSupply
-                ? URIDataPhase1
-                : URIDataPhase2;
 
-        bytes memory _name = bytes(
-            abi.encodePacked(_URIData.name, Strings.toString(_tokenId))
-        );
+        URIData memory _URIData;
 
         bytes memory _image = !revealed
             ? bytes(abi.encodePacked(_URIData.image))
@@ -165,16 +175,48 @@ contract JustArt is ERC721 {
         bytes memory _attribute;
         if (revealed) {
             if (_tokenId <= maxSupply) {
+                _URIData = URIDataPhase1;
+                _image = bytes(
+                    abi.encodePacked(
+                        _URIData.image,
+                        Strings.toString(tokenVisuals[_tokenId]),
+                        ".png"
+                    )
+                );
                 _attribute = bytes(visualNames[tokenVisuals[_tokenId]]);
+            } else if (isReceipt[_tokenId]) {
+                _URIData = URIDataReceipt;
+                _image = bytes(
+                    abi.encodePacked(
+                        _URIData.image,
+                        Strings.toString(receiptVisuals[_tokenId]),
+                        ".png"
+                    )
+                );
+                _attribute = "What is it worth";
             } else {
+                _URIData = URIDataPhase2;
+                _image = bytes(
+                    abi.encodePacked(
+                        _URIData.image,
+                        Strings.toString(tokenVisuals[_tokenId]),
+                        ".png"
+                    )
+                );
                 _attribute = abi.encodePacked(
                     "Untitled #",
                     Strings.toString(tokenVisuals[_tokenId] + 1)
                 );
             }
         } else {
+            _URIData = URIDataPhase0;
+            _image = bytes(abi.encodePacked(_URIData.image));
             _attribute = "JustArt*";
         }
+
+        bytes memory _name = bytes(
+            abi.encodePacked(_URIData.name, Strings.toString(_tokenId))
+        );
 
         bytes memory _attributes = bytes(
             abi.encodePacked(

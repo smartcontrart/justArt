@@ -26,6 +26,12 @@ const DEFAULT_URI_DATA_PHASE_2 = {
     "after a while the meaning of a given work is valued by the price people are willing to pay.",
   image: "https://arweave.net/YeHJekpGktwjGx_7nzRdfd0jmGQh3Vr58p9ZTKmGyU4/",
 };
+const DEFAULT_URI_DATA_RECEIPT = {
+  name: "Receipt #",
+  description:
+    "after a while the meaning of a given work is valued by the price people are willing to pay.",
+  image: "https://arweave.net/gbuLK-j1IIKMfXRQS91Z6HmJbc0tdQbDtBByErxng54/",
+};
 
 const RECIPIENT_1 = "0x66806e42191E65968Cd520D2615566E24368Ef12";
 const RECIPIENT_2 = "0x66806e42191E65968Cd520D2615566E24368Ef12";
@@ -44,7 +50,8 @@ async function main() {
   const justArt = await JustArt.deploy(
     DEFAULT_URI_DATA_PHASE_0,
     DEFAULT_URI_DATA_PHASE_1,
-    DEFAULT_URI_DATA_PHASE_2
+    DEFAULT_URI_DATA_PHASE_2,
+    DEFAULT_URI_DATA_RECEIPT
   );
   await justArt.deployed();
 
@@ -61,13 +68,7 @@ async function main() {
     SHARE_RECIPIENT_1,
     SHARE_RECIPIENT_2,
   ];
-  const justArtMint = await JustArtMint.deploy(
-    justArtMintArgs[0],
-    justArtMintArgs[1],
-    justArtMintArgs[2],
-    justArtMintArgs[3],
-    justArtMintArgs[4]
-  );
+  const justArtMint = await JustArtMint.deploy(...justArtMintArgs);
   await justArtMint.deployed();
 
   console.log(`JustArtMint deployed to ${justArtMint.address}`);
@@ -81,6 +82,7 @@ async function main() {
       DEFAULT_URI_DATA_PHASE_0,
       DEFAULT_URI_DATA_PHASE_1,
       DEFAULT_URI_DATA_PHASE_2,
+      DEFAULT_URI_DATA_RECEIPT,
     ],
   };
   contractsData[hre.network.name]["JustArtMint"] = {

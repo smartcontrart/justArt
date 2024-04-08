@@ -29,6 +29,13 @@ const DEFAULT_URI_DATA_PHASE_2 = {
     "after a while the meaning of a given work is valued by the price people are willing to pay.",
   image: "https://arweave.net/YeHJekpGktwjGx_7nzRdfd0jmGQh3Vr58p9ZTKmGyU4/",
 };
+const DEFAULT_URI_DATA_RECEIPT = {
+  name: "Receipt #",
+  description:
+    "after a while the meaning of a given work is valued by the price people are willing to pay.",
+  image: "https://arweave.net/gbuLK-j1IIKMfXRQS91Z6HmJbc0tdQbDtBByErxng54/",
+};
+
 const MINT_PRICE = "0.005";
 const DEFAULT_QUANTITY = 12;
 const DEFAULT_SHARE_1 = 8000;
@@ -42,7 +49,8 @@ describe("Just Art", function () {
     const justArt = await JustArt.deploy(
       DEFAULT_URI_DATA_PHASE_0,
       DEFAULT_URI_DATA_PHASE_1,
-      DEFAULT_URI_DATA_PHASE_2
+      DEFAULT_URI_DATA_PHASE_2,
+      DEFAULT_URI_DATA_RECEIPT
     );
     await justArt.deployed();
 
@@ -126,7 +134,7 @@ describe("Just Art", function () {
       await justArt.mint(collector.address, 1);
       const visual = await justArt.tokenVisuals(1);
       expect(await justArt.tokenURI(1)).to.equal(
-        `data:application/json;utf8,{"name":"JustArt* #1", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/TiRpt56pd7hAEn8Aa9HHJnSi9iZBpvvidzrTWwZAfow", "attributes":[{"trait_type": "Art Name", "value": "JustArt*"}]}`
+        `data:application/json;utf8,{"name":"JustArt* #1", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/TiRpt56pd7hAEn8Aa9HHJnSi9iZBpvvidzrTWwZAfow", "attributes":[{"trait_type": "Artwork", "value": "JustArt*"}]}`
       );
     });
 
@@ -137,7 +145,7 @@ describe("Just Art", function () {
       const visual = await justArt.tokenVisuals(1);
       const visualNames = await justArt.visualNames(visual);
       expect(await justArt.tokenURI(1)).to.equal(
-        `data:application/json;utf8,{"name":"JustArt* #1", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/1LxpZB7jljZDADFAcEmN-CDDck6VfbdAGrv8keTAGaI/${visual}.png", "attributes":[{"trait_type": "Art Name", "value": "${visualNames}"}]}`
+        `data:application/json;utf8,{"name":"JustArt* #1", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/1LxpZB7jljZDADFAcEmN-CDDck6VfbdAGrv8keTAGaI/${visual}.png", "attributes":[{"trait_type": "Artwork", "value": "${visualNames}"}]}`
       );
     });
 
@@ -147,7 +155,7 @@ describe("Just Art", function () {
       await justArt.setURI(0, DEFAULT_UPDATED_URI);
       const visual = await justArt.tokenVisuals(1);
       expect(await justArt.tokenURI(1)).to.equal(
-        `data:application/json;utf8,{"name":"Updated #1", "description":"Updated", "image":"Updated/", "attributes":[{"trait_type": "Art Name", "value": "JustArt*"}]}`
+        `data:application/json;utf8,{"name":"Updated #1", "description":"Updated", "image":"Updated/", "attributes":[{"trait_type": "Artwork", "value": "JustArt*"}]}`
       );
     });
 
@@ -159,7 +167,7 @@ describe("Just Art", function () {
       const visual = await justArt.tokenVisuals(1);
       const visualNames = await justArt.visualNames(visual);
       expect(await justArt.tokenURI(1)).to.equal(
-        `data:application/json;utf8,{"name":"Updated #1", "description":"Updated", "image":"Updated/${visual}.png", "attributes":[{"trait_type": "Art Name", "value": "${visualNames}"}]}`
+        `data:application/json;utf8,{"name":"Updated #1", "description":"Updated", "image":"Updated/${visual}.png", "attributes":[{"trait_type": "Artwork", "value": "${visualNames}"}]}`
       );
     });
 
@@ -169,19 +177,30 @@ describe("Just Art", function () {
       const tokensToSwap = [1, 2, 3, 4];
       await justArt.mint(collector.address, 100);
       await justArt.reveal();
+      await justArt.enableSwaps();
       await justArt.connect(collector).swap(tokensToSwap);
       await justArt.setURI(2, DEFAULT_UPDATED_URI);
       const visual = await justArt.tokenVisuals(swappedTokenId);
       const tokenVisual = parseInt(visual) + 1;
       expect(await justArt.tokenURI(swappedTokenId)).to.equal(
-        `data:application/json;utf8,{"name":"Updated #${swappedTokenId}", "description":"Updated", "image":"Updated/${visual}.png", "attributes":[{"trait_type": "Art Name", "value": "Untitled #${tokenVisual}"}]}`
+        `data:application/json;utf8,{"name":"Updated #${swappedTokenId}", "description":"Updated", "image":"Updated/${visual}.png", "attributes":[{"trait_type": "Artwork", "value": "Untitled #${tokenVisual}"}]}`
       );
+    });
+
+    it("Should prevent to swap when disabled", async function () {
+      const { justArt, collector } = await loadFixture(deployJustArt);
+      const tokensToSwap = [1, 2, 3, 4];
+      await justArt.mint(collector.address, 100);
+      await expect(
+        justArt.connect(collector).swap(tokensToSwap)
+      ).to.be.revertedWith("Swaps closed");
     });
 
     it("Should swap tokens", async function () {
       const { justArt, collector } = await loadFixture(deployJustArt);
       const tokensToSwap = [1, 2, 3, 4];
       await justArt.mint(collector.address, 100);
+      await justArt.enableSwaps();
       await expect(justArt.connect(collector).swap(tokensToSwap)).to.not.be
         .reverted;
     });
@@ -190,6 +209,7 @@ describe("Just Art", function () {
       const { justArt, collector } = await loadFixture(deployJustArt);
       const tokensToSwap = [1, 2, 3, 4];
       await justArt.mint(collector.address, 100);
+      await justArt.enableSwaps();
       await justArt.connect(collector).swap(tokensToSwap);
       for (let i = 0; i < tokensToSwap.length; i++) {
         await expect(justArt.tokenURI(tokensToSwap[i])).to.be.reverted;
@@ -202,14 +222,28 @@ describe("Just Art", function () {
       const maxSupply = await justArt.maxSupply();
       const swappedTokenId = await justArt.swappedTokenId();
       await justArt.mint(collector.address, 100);
+      await justArt.enableSwaps();
       await justArt.connect(collector).swap(tokensToSwap);
       expect(await justArt.ownerOf(swappedTokenId)).to.equal(collector.address);
+    });
+
+    it("Swapping tokens should issue a receipt", async function () {
+      const { justArt, collector } = await loadFixture(deployJustArt);
+      const tokensToSwap = [1, 2, 3, 4];
+      const maxSupply = await justArt.maxSupply();
+      const swappedTokenId = await justArt.swappedTokenId();
+      await justArt.mint(collector.address, 100);
+      await justArt.enableSwaps();
+      await justArt.connect(collector).swap(tokensToSwap);
+      const receiptTokenId = parseInt(swappedTokenId) + 1;
+      expect(await justArt.ownerOf(receiptTokenId)).to.equal(collector.address);
     });
 
     it("Should revert if not a multiple of 4 tokens is passed to swap", async function () {
       const { justArt, collector } = await loadFixture(deployJustArt);
       const tokensToSwap = [1, 2, 3, 4, 5];
       await justArt.mint(collector.address, 8);
+      await justArt.enableSwaps();
       await expect(
         justArt.connect(collector).swap(tokensToSwap)
       ).to.be.revertedWith("Requires 4 tokens to swap");
@@ -220,6 +254,7 @@ describe("Just Art", function () {
       const tokensToSwap = [];
       await justArt.mint(collector.address, 100);
       await justArt.mint(collector.address, 4);
+      await justArt.enableSwaps();
       for (let i = 0; i < 104; i++) {
         tokensToSwap.push(i + 1);
       }
@@ -234,17 +269,35 @@ describe("Just Art", function () {
       const swappedTokenId = await justArt.swappedTokenId();
       await justArt.mint(collector.address, 100);
       await justArt.reveal();
+      await justArt.enableSwaps();
       await justArt.connect(collector).swap(tokensToSwap);
       const visual = await justArt.tokenVisuals(swappedTokenId);
       const tokenVisual = parseInt(visual) + 1;
       expect(await justArt.tokenURI(swappedTokenId)).to.equal(
-        `data:application/json;utf8,{"name":"Untitled #${swappedTokenId}", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/YeHJekpGktwjGx_7nzRdfd0jmGQh3Vr58p9ZTKmGyU4/${visual}.png", "attributes":[{"trait_type": "Art Name", "value": "Untitled #${tokenVisual}"}]}`
+        `data:application/json;utf8,{"name":"Untitled #${swappedTokenId}", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/YeHJekpGktwjGx_7nzRdfd0jmGQh3Vr58p9ZTKmGyU4/${visual}.png", "attributes":[{"trait_type": "Artwork", "value": "Untitled #${tokenVisual}"}]}`
+      );
+    });
+
+    it("Receipts should have receipt URIData", async function () {
+      const { justArt, collector } = await loadFixture(deployJustArt);
+      const tokensToSwap = [1, 2, 3, 4];
+      const swappedTokenId = await justArt.swappedTokenId();
+      await justArt.mint(collector.address, 100);
+      await justArt.reveal();
+      await justArt.enableSwaps();
+      await justArt.connect(collector).swap(tokensToSwap);
+      const visual = await justArt.tokenVisuals(swappedTokenId);
+      const tokenVisual = parseInt(visual) % 4;
+      const receiptTokenId = parseInt(swappedTokenId) + 1;
+      expect(await justArt.tokenURI(receiptTokenId)).to.equal(
+        `data:application/json;utf8,{"name":"Receipt #${receiptTokenId}", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"placeholder/${tokenVisual}.png", "attributes":[{"trait_type": "Artwork", "value": "What is it worth"}]}`
       );
     });
 
     it("Should have a proper distrubution in phase 2", async function () {
       const { justArt, collector } = await loadFixture(deployJustArt);
       const maxSupply = await justArt.maxSupply();
+      await justArt.enableSwaps();
       // const bucket = maxSupply / 100;
       for (i = 0; i < 5; i++) {
         await justArt.mint(collector.address, 100);
@@ -295,7 +348,8 @@ describe("JustArtMint Unit", function () {
     const justArt = await JustArt.deploy(
       DEFAULT_URI_DATA_PHASE_0,
       DEFAULT_URI_DATA_PHASE_1,
-      DEFAULT_URI_DATA_PHASE_2
+      DEFAULT_URI_DATA_PHASE_2,
+      DEFAULT_URI_DATA_RECEIPT
     );
     await justArt.deployed();
 
