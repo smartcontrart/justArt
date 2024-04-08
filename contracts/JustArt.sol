@@ -25,6 +25,7 @@ contract JustArt is ERC721 {
     uint256 public immutable DIVISOR = 10000;
 
     mapping(uint256 => uint256) public tokenVisuals;
+    mapping(uint256 => string) public visualNames;
 
     string[] private uriComponents;
     string uri;
@@ -44,7 +45,8 @@ contract JustArt is ERC721 {
             'data:application/json;utf8,{"name":"',
             '", "description":"',
             '", "image":"',
-            '"}'
+            '", "attributes":[',
+            "]}"
         ];
         isAdmin[msg.sender] = true;
         royalties_recipient = payable(msg.sender);
@@ -54,6 +56,10 @@ contract JustArt is ERC721 {
         URIDataPhase0 = _URIDataPhase0;
         URIDataPhase1 = _URIDataPhase1;
         URIDataPhase2 = _URIDataPhase2;
+        visualNames[0] = "American Gothic";
+        visualNames[1] = "Mona Lisa";
+        visualNames[2] = "The Starry Night";
+        visualNames[3] = "Composition with Red, Blue and Yellow";
     }
 
     function supportsInterface(
@@ -103,7 +109,6 @@ contract JustArt is ERC721 {
             _burn(_tokenIds[i]);
             if ((i + 1) % 4 == 0) {
                 uint256 visual = getPseudoRndNumber(20, swappedTokenId);
-                console.log(visual);
                 tokenVisuals[swappedTokenId] = visual;
                 _mint(msg.sender, swappedTokenId);
                 swappedTokenId++;
@@ -156,11 +161,34 @@ contract JustArt is ERC721 {
                     ".png"
                 )
             );
+
+        bytes memory _attribute;
+        if (revealed) {
+            if (_tokenId <= maxSupply) {
+                _attribute = bytes(visualNames[tokenVisuals[_tokenId]]);
+            } else {
+                _attribute = abi.encodePacked(
+                    "Untitled #",
+                    Strings.toString(tokenVisuals[_tokenId] + 1)
+                );
+            }
+        } else {
+            _attribute = "JustArt*";
+        }
+
+        bytes memory _attributes = bytes(
+            abi.encodePacked(
+                '{"trait_type": "Artwork", "value": "',
+                _attribute,
+                '"}'
+            )
+        );
         bytes memory _byteString = abi.encodePacked(
             abi.encodePacked(uriComponents[0], _name),
             abi.encodePacked(uriComponents[1], _URIData.description),
             abi.encodePacked(uriComponents[2], _image),
-            abi.encodePacked(uriComponents[3])
+            abi.encodePacked(uriComponents[3], _attributes),
+            abi.encodePacked(uriComponents[4])
         );
         return string(_byteString);
     }

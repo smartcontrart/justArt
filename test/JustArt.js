@@ -126,7 +126,7 @@ describe("Just Art", function () {
       await justArt.mint(collector.address, 1);
       const visual = await justArt.tokenVisuals(1);
       expect(await justArt.tokenURI(1)).to.equal(
-        `data:application/json;utf8,{"name":"JustArt* #1", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/TiRpt56pd7hAEn8Aa9HHJnSi9iZBpvvidzrTWwZAfow"}`
+        `data:application/json;utf8,{"name":"JustArt* #1", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/TiRpt56pd7hAEn8Aa9HHJnSi9iZBpvvidzrTWwZAfow", "attributes":[{"trait_type": "Art Name", "value": "JustArt*"}]}`
       );
     });
 
@@ -135,8 +135,9 @@ describe("Just Art", function () {
       await justArt.mint(collector.address, 1);
       await justArt.reveal();
       const visual = await justArt.tokenVisuals(1);
+      const visualNames = await justArt.visualNames(visual);
       expect(await justArt.tokenURI(1)).to.equal(
-        `data:application/json;utf8,{"name":"JustArt* #1", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/1LxpZB7jljZDADFAcEmN-CDDck6VfbdAGrv8keTAGaI/${visual}.png"}`
+        `data:application/json;utf8,{"name":"JustArt* #1", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/1LxpZB7jljZDADFAcEmN-CDDck6VfbdAGrv8keTAGaI/${visual}.png", "attributes":[{"trait_type": "Art Name", "value": "${visualNames}"}]}`
       );
     });
 
@@ -146,7 +147,7 @@ describe("Just Art", function () {
       await justArt.setURI(0, DEFAULT_UPDATED_URI);
       const visual = await justArt.tokenVisuals(1);
       expect(await justArt.tokenURI(1)).to.equal(
-        `data:application/json;utf8,{"name":"Updated #1", "description":"Updated", "image":"Updated/"}`
+        `data:application/json;utf8,{"name":"Updated #1", "description":"Updated", "image":"Updated/", "attributes":[{"trait_type": "Art Name", "value": "JustArt*"}]}`
       );
     });
 
@@ -156,8 +157,9 @@ describe("Just Art", function () {
       await justArt.setURI(1, DEFAULT_UPDATED_URI);
       await justArt.reveal();
       const visual = await justArt.tokenVisuals(1);
+      const visualNames = await justArt.visualNames(visual);
       expect(await justArt.tokenURI(1)).to.equal(
-        `data:application/json;utf8,{"name":"Updated #1", "description":"Updated", "image":"Updated/${visual}.png"}`
+        `data:application/json;utf8,{"name":"Updated #1", "description":"Updated", "image":"Updated/${visual}.png", "attributes":[{"trait_type": "Art Name", "value": "${visualNames}"}]}`
       );
     });
 
@@ -170,8 +172,9 @@ describe("Just Art", function () {
       await justArt.connect(collector).swap(tokensToSwap);
       await justArt.setURI(2, DEFAULT_UPDATED_URI);
       const visual = await justArt.tokenVisuals(swappedTokenId);
+      const tokenVisual = parseInt(visual) + 1;
       expect(await justArt.tokenURI(swappedTokenId)).to.equal(
-        `data:application/json;utf8,{"name":"Updated #${swappedTokenId}", "description":"Updated", "image":"Updated/${visual}.png"}`
+        `data:application/json;utf8,{"name":"Updated #${swappedTokenId}", "description":"Updated", "image":"Updated/${visual}.png", "attributes":[{"trait_type": "Art Name", "value": "Untitled #${tokenVisual}"}]}`
       );
     });
 
@@ -233,8 +236,9 @@ describe("Just Art", function () {
       await justArt.reveal();
       await justArt.connect(collector).swap(tokensToSwap);
       const visual = await justArt.tokenVisuals(swappedTokenId);
+      const tokenVisual = parseInt(visual) + 1;
       expect(await justArt.tokenURI(swappedTokenId)).to.equal(
-        `data:application/json;utf8,{"name":"Untitled #${swappedTokenId}", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/YeHJekpGktwjGx_7nzRdfd0jmGQh3Vr58p9ZTKmGyU4/${visual}.png"}`
+        `data:application/json;utf8,{"name":"Untitled #${swappedTokenId}", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/YeHJekpGktwjGx_7nzRdfd0jmGQh3Vr58p9ZTKmGyU4/${visual}.png", "attributes":[{"trait_type": "Art Name", "value": "Untitled #${tokenVisual}"}]}`
       );
     });
 
