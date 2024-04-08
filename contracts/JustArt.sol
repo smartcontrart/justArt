@@ -5,6 +5,7 @@ pragma solidity >=0.8.24;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@manifoldxyz/royalty-registry-solidity/contracts/specs/IEIP2981.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "hardhat/console.sol";
 
 contract JustArt is ERC721 {
     struct URIData {
@@ -70,13 +71,12 @@ contract JustArt is ERC721 {
     }
 
     function getPseudoRndNumber(
-        uint256 _upperBound
-    ) internal returns (uint256) {
+        uint256 _upperBound,
+        uint256 _nonce
+    ) internal view returns (uint256) {
         return
             uint256(
-                keccak256(
-                    abi.encodePacked(block.timestamp, tokenId, msg.sender)
-                )
+                keccak256(abi.encodePacked(block.timestamp, _nonce, msg.sender))
             ) % _upperBound;
     }
 
@@ -85,7 +85,7 @@ contract JustArt is ERC721 {
         // Offsets tokenId as it's already incremented
         require((tokenId - 1) + _quantity <= maxSupply, "Max supply reached");
         for (uint256 i = 0; i < _quantity; i++) {
-            uint256 visual = getPseudoRndNumber(4);
+            uint256 visual = getPseudoRndNumber(4, tokenId);
             tokenVisuals[tokenId] = visual;
             _mint(_to, tokenId);
             tokenId++;
@@ -102,8 +102,9 @@ contract JustArt is ERC721 {
             require(ownerOf(_tokenIds[i]) == msg.sender, "Not the owner");
             _burn(_tokenIds[i]);
             if ((i + 1) % 4 == 0) {
-                uint256 visual = getPseudoRndNumber(20);
-                tokenVisuals[tokenId] = visual;
+                uint256 visual = getPseudoRndNumber(20, swappedTokenId);
+                console.log(visual);
+                tokenVisuals[swappedTokenId] = visual;
                 _mint(msg.sender, swappedTokenId);
                 swappedTokenId++;
             }

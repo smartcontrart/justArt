@@ -165,11 +165,11 @@ describe("Just Art", function () {
       const { justArt, collector } = await loadFixture(deployJustArt);
       const swappedTokenId = await justArt.swappedTokenId();
       const tokensToSwap = [1, 2, 3, 4];
-      const visual = await justArt.tokenVisuals(swappedTokenId);
       await justArt.mint(collector.address, 100);
       await justArt.reveal();
       await justArt.connect(collector).swap(tokensToSwap);
       await justArt.setURI(2, DEFAULT_UPDATED_URI);
+      const visual = await justArt.tokenVisuals(swappedTokenId);
       expect(await justArt.tokenURI(swappedTokenId)).to.equal(
         `data:application/json;utf8,{"name":"Updated #${swappedTokenId}", "description":"Updated", "image":"Updated/${visual}.png"}`
       );
@@ -229,16 +229,56 @@ describe("Just Art", function () {
       const { justArt, collector } = await loadFixture(deployJustArt);
       const tokensToSwap = [1, 2, 3, 4];
       const swappedTokenId = await justArt.swappedTokenId();
-      const visual = await justArt.tokenVisuals(swappedTokenId);
       await justArt.mint(collector.address, 100);
       await justArt.reveal();
       await justArt.connect(collector).swap(tokensToSwap);
+      const visual = await justArt.tokenVisuals(swappedTokenId);
       expect(await justArt.tokenURI(swappedTokenId)).to.equal(
         `data:application/json;utf8,{"name":"Untitled #${swappedTokenId}", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/YeHJekpGktwjGx_7nzRdfd0jmGQh3Vr58p9ZTKmGyU4/${visual}.png"}`
       );
     });
 
-    // Need to test the visuals pre/post swap
+    it("Should have a proper distrubution in phase 2", async function () {
+      const { justArt, collector } = await loadFixture(deployJustArt);
+      const maxSupply = await justArt.maxSupply();
+      // const bucket = maxSupply / 100;
+      for (i = 0; i < 5; i++) {
+        await justArt.mint(collector.address, 100);
+      }
+      const swaps = 500 / 4;
+      let id = 1;
+      for (i = 0; i < swaps; i++) {
+        await justArt.connect(collector).swap([id, id + 1, id + 2, id + 3]);
+        id += 4;
+      }
+      const distribution = {
+        0: 0,
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0,
+        10: 0,
+        11: 0,
+        12: 0,
+        13: 0,
+        14: 0,
+        15: 0,
+        16: 0,
+        17: 0,
+        18: 0,
+        19: 0,
+      };
+      for (let i = 12000 + 1; i < 12000 + swaps; i++) {
+        const visual = await justArt.tokenVisuals(i);
+        distribution[visual]++;
+      }
+      console.log(distribution);
+    });
   });
 });
 
