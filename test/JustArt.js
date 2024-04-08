@@ -33,7 +33,7 @@ const DEFAULT_URI_DATA_RECEIPT = {
   name: "Receipt #",
   description:
     "after a while the meaning of a given work is valued by the price people are willing to pay.",
-  image: "https://arweave.net/gbuLK-j1IIKMfXRQS91Z6HmJbc0tdQbDtBByErxng54/",
+  image: "https://arweave.net/QmuMaGnuvvCxyHlsq2rXQ0iYlGtNJDue21m4U8dAKFo/",
 };
 
 const MINT_PRICE = "0.005";
@@ -290,7 +290,7 @@ describe("Just Art", function () {
       const tokenVisual = parseInt(visual) % 4;
       const receiptTokenId = parseInt(swappedTokenId) + 1;
       expect(await justArt.tokenURI(receiptTokenId)).to.equal(
-        `data:application/json;utf8,{"name":"Receipt #${receiptTokenId}", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"placeholder/${tokenVisual}.png", "attributes":[{"trait_type": "Artwork", "value": "What is it worth"}]}`
+        `data:application/json;utf8,{"name":"Receipt #${receiptTokenId}", "description":"after a while the meaning of a given work is valued by the price people are willing to pay.", "image":"https://arweave.net/QmuMaGnuvvCxyHlsq2rXQ0iYlGtNJDue21m4U8dAKFo/${tokenVisual}.png", "attributes":[{"trait_type": "Artwork", "value": "What is it worth"}]}`
       );
     });
 

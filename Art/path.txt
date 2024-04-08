@@ -1,3 +1,4 @@
 pre-reveal: https://arweave.net/TiRpt56pd7hAEn8Aa9HHJnSi9iZBpvvidzrTWwZAfow
-Phase 1: https://arweave.net/1LxpZB7jljZDADFAcEmN-CDDck6VfbdAGrv8keTAGaI 
-Phase 2: https://arweave.net/YeHJekpGktwjGx_7nzRdfd0jmGQh3Vr58p9ZTKmGyU4
+Phase 1: https://arweave.net/1LxpZB7jljZDADFAcEmN-CDDck6VfbdAGrv8keTAGaI/
+Phase 2: https://arweave.net/YeHJekpGktwjGx_7nzRdfd0jmGQh3Vr58p9ZTKmGyU4/
+Receipts: https://arweave.net/QmuMaGnuvvCxyHlsq2rXQ0iYlGtNJDue21m4U8dAKFo/

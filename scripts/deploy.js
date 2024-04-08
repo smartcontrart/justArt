@@ -30,7 +30,7 @@ const DEFAULT_URI_DATA_RECEIPT = {
   name: "Receipt #",
   description:
     "after a while the meaning of a given work is valued by the price people are willing to pay.",
-  image: "https://arweave.net/gbuLK-j1IIKMfXRQS91Z6HmJbc0tdQbDtBByErxng54/",
+  image: "https://arweave.net/QmuMaGnuvvCxyHlsq2rXQ0iYlGtNJDue21m4U8dAKFo/",
 };
 
 const RECIPIENT_1 = "0x66806e42191E65968Cd520D2615566E24368Ef12";
