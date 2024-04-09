@@ -75,7 +75,7 @@ export default function Home() {
       <div className="flex flex-col text-4xl p-5 font-extrabold justify-end">
         <div className="flex flex-row text-base lg:text-lg font-extrabold w-72 md:w-96 justify-between text-center self-center lg:self-end">
           <div>.005 eth</div>
-          <div>{Number(supply) - 1}/12,000 minted.</div>
+          <div>{Math.max(0, Number(supply) - 1)}/12,000 minted.</div>
         </div>
         <div className="flex text-lg font-extrabold lg:justify-end justify-center">
           <Image
