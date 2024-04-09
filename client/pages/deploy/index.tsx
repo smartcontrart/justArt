@@ -9,7 +9,8 @@ let userAddress: `0x${string}` | undefined;
 
 const DeployPage: NextPage = () => {
   // const { address, connector, isConnected } = useAccount();
-  return <div className="">{<Deploy />}</div>;
+  // return <div className="">{<Deploy />}</div>;
+  return null;
 };
 
 export default DeployPage;
