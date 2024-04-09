@@ -1,7 +1,7 @@
 {
   "sepolia": {
     "JustArt": {
-      "contract": "0x587ebf60caecb335f73ee141a5a0625bfde81462",
+      "contract": "0x076f4020a4fD34D5915e5Cc32Bd0af19CA42fD6a",
       "arguments": [
         {
           "name": "JustArt* #",
@@ -38,7 +38,7 @@
   },
   "base": {
     "JustArt": {
-      "contract": "0xB042CE5A1436f12a0B1Df313EcAaA857337A1002",
+      "contract": "0x587ebF60cAEcB335F73eE141a5a0625BFdE81462",
       "arguments": [
         {
           "name": "JustArt* #",
