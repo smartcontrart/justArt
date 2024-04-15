@@ -20,6 +20,7 @@ import {
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "@wagmi/core/providers/alchemy";
+import { infuraProvider } from "@wagmi/core/providers/infura";
 import {
   braveWallet,
   rabbyWallet,
@@ -37,6 +38,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   ],
   [
     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_MAINNET }),
+    infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY }),
     publicProvider(),
   ]
 );
