@@ -37,6 +37,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [sepolia] : []),
   ],
   [
+    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_MAINNET }),
     infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY }),
     publicProvider(),
   ]
