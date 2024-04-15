@@ -35,7 +35,10 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     sepolia,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [sepolia] : []),
   ],
-  [publicProvider()]
+  [
+    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_MAINNET }),
+    publicProvider(),
+  ]
 );
 
 const { wallets } = getDefaultWallets({
