@@ -12,7 +12,6 @@ async function main() {
   const [deployer] = await ethers.getSigners();
 
   for (i = 0; i < ALaddresses.length; i++) {
-    console.log(contractsData[hre.network.name]["JustArt"].contract);
     const message = ethers.utils.solidityKeccak256(
       ["address", "address", "bool"],
       [
