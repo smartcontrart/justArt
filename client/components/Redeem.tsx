@@ -25,7 +25,7 @@ export default function Redeem() {
       const config = {
         apiKey: process.env.REACT_APP_ALCHEMY_KEY,
         network:
-          chain!.id === 11155111 ? Network.ETH_SEPOLIA : Network.ETH_BASE,
+          chain!.id === 11155111 ? Network.ETH_SEPOLIA : Network.BASE_MAINNET,
       };
       const alchemy = new Alchemy(config);
 
@@ -38,7 +38,6 @@ export default function Redeem() {
         address as `0x${string}`,
         {
           contractAddresses: [`${contractAddress}`],
-          pageSize: 100,
         }
       );
       setNfts(response.ownedNfts);
