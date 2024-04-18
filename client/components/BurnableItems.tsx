@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import justArt from "../visuals/justArt_.svg";
+import justArt from "../visuals/justart_.svg";
 import { use } from "chai";
 import JustArt from "../contracts/JustArt.sol/JustArt.json";
 import {
