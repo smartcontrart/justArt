@@ -66,20 +66,22 @@ export default function BurnableItems(props) {
   });
 
   return (
-    <div className="flex flex-col justify-center items-center lg:w-1/3 items-start pt-20">
+    <div className="flex flex-col justify-center items-center lg:w-1/3 items-start">
       <Image src={justArt} className="flex w-72 max-w-52" alt="barcode" />
       <div className="flex flex-wrap grid-cols-3 lg:h-96 w-100 overflow-scroll my-5 h-128">
         {renderOptions()}
       </div>
-      <button
-        disabled={selection.length % 4 !== 0 || write === undefined}
-        onClick={() => write()}
-        className="rounded-xl pink text-xl w-24 m-5 disabled:opacity-20"
-      >
-        Burn
-      </button>
-      <div className="min-w-100 text-blue-600 text-sm">
-        YOU HAVE {nfts.length} BURNABLE TOKENS - BURN IN MULTIPLES OF (4)
+      <div className="flex  flex-col justify-center items-center h-24">
+        <button
+          disabled={selection.length % 4 !== 0 || write === undefined}
+          onClick={() => write()}
+          className="rounded-xl pink text-xl w-24 m-5 disabled:opacity-20"
+        >
+          Burn
+        </button>
+        <div className=" min-w-100 text-blue-600 text-sm">
+          YOU HAVE {nfts.length} BURNABLE TOKENS - BURN IN MULTIPLES OF (4)
+        </div>
       </div>
     </div>
   );

@@ -35,6 +35,7 @@ export default function RedeemableItems(props) {
       <div className="flex flex-wrap grid-cols-3 lg:h-96 w-100 overflow-scroll my-5 h-128">
         {renderOptions()}
       </div>
+      <div className="h-24"></div>
     </div>
   );
 }
