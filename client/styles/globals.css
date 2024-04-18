@@ -33,6 +33,14 @@ body {
   animation: button-color-change 3s infinite alternate;
 }
 
+.h-128 {
+  height: 32rem;
+}
+
+.pink {
+  background-color: #f4dddd;
+}
+
 @keyframes button-color-change {
   from {
     background-color: #f4dddd;

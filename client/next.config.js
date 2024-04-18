@@ -7,7 +7,7 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
-  reactStrictMode: true,
+  reactStrictMode: false,
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
     return config;
@@ -17,6 +17,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "nft-cdn.alchemy.com",
+      },
+      {
+        protocol: "https",
+        hostname: "arweave.net",
       },
     ],
   },
