@@ -53,7 +53,7 @@ export default function Redeem() {
       {userConnected ? (
         <div className="flex flex-col md:flex-row md:justify-between p-5 items-start">
           {isConnected ? (
-            chain!.id === 11155111 ? (
+            chain!.id === 8453 ? (
               <div></div>
             ) : (
               <div>Please connect to Base</div>

@@ -9,8 +9,8 @@ let userAddress: `0x${string}` | undefined;
 
 const RedeemPage: NextPage = () => {
   const { address, connector, isConnected } = useAccount();
-  return <div className="">{<Redeem />}</div>;
-  // return null;
+  // return <div className="">{<Redeem />}</div>;
+  return null;
 };
 
 export default RedeemPage;

@@ -44,7 +44,7 @@ export default function Home() {
         <div className="flex flex-col md:flex-row md:justify-between p-5 items-start">
           {isConnected ? (
             // chain!.id === 8453 ? (
-            chain!.id === 11155111 ? (
+            chain!.id === 8453 ? (
               <UserInterface />
             ) : (
               <div>Please connect to Base</div>

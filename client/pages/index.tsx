@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Home from "../components/Home";
+import Redeem from "../components/Redeem";
 import { Fragment } from "react";
 
 const App: NextPage = () => {
@@ -14,7 +14,7 @@ const App: NextPage = () => {
         />
         <link href="/favicon.ico" rel="icon" />
       </Head>
-      <Home />
+      <Redeem />
     </Fragment>
   );
 };
