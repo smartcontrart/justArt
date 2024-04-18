@@ -15,16 +15,7 @@ export default function RedeemableItems(props) {
   const renderOptions = () => {
     return nfts.map((nft, index) => {
       return (
-        <span
-          key={index}
-          onClick={() => {
-            if (selection.includes(nft)) {
-              setSelection(selection.filter((item) => item !== nft));
-            } else {
-              setSelection([...selection, nft]);
-            }
-          }}
-        >
+        <span key={index}>
           <Image
             className={`${
               selection.includes(nft) ? "border-black border-2" : ""
