@@ -66,7 +66,7 @@ export default function BurnableItems(props) {
   });
 
   return (
-    <div className="flex flex-col justify-center items-center lg:w-1/3">
+    <div className="flex flex-col justify-center items-center lg:w-1/3 items-start pt-20">
       <Image src={justArt} className="flex w-72 max-w-52" alt="barcode" />
       <div className="flex flex-wrap grid-cols-3 lg:h-96 w-100 overflow-scroll my-5 h-128">
         {renderOptions()}

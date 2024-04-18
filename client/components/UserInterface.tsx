@@ -15,7 +15,6 @@ import JustArtMint from "../contracts/JustArtMint.sol/JustArtMint.json";
 import PrivateMint from "./PrivateMint";
 import PublicMint from "./PublicMint";
 import signedList from "../signedList.json";
-import { MissingCustomChainError } from "web3";
 
 export default function UserInterface() {
   const [signedMessage, setSignedMessage] = useState({ v: "", r: "", s: "" });

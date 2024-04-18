@@ -19,7 +19,7 @@ export default function RedeemableItems(props) {
           <Image
             className={`${
               selection.includes(nft) ? "border-black border-2" : ""
-            } w-1/3 m-2 text-center rounded-md cursor-pointer h-20 w-20`}
+            } w-1/3 m-2 text-center rounded-md h-20 w-20`}
             src={nft.image.cachedUrl}
             alt="nft_visual"
             width={100}
@@ -30,7 +30,7 @@ export default function RedeemableItems(props) {
     });
   };
   return (
-    <div className="flex flex-col justify-center items-center lg:w-1/3">
+    <div className="flex flex-col justify-center items-center lg:w-1/3 items-start">
       <Image src={untitled} className="flex w-72 max-w-52" alt="barcode" />
       <div className="flex flex-wrap grid-cols-3 lg:h-96 w-100 overflow-scroll my-5 h-128">
         {renderOptions()}
